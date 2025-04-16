@@ -70,18 +70,25 @@ export function SiteHeader() {
         ) : (
           <MainNav />
         )}
-        <ModeToggle />
+        
+        {/* Right-aligned container with conditional order of elements */}
         <div className="flex items-center space-x-4">
-          {isAdminPage && (
-            <Button 
-              variant="ghost" 
-              size="sm"
-              className="text-red-500 hover:text-red-600 hover:bg-red-50 flex items-center"
-              onClick={handleLogout}
-              disabled={isLoggingOut}
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-            </Button>
+          {isAdminPage ? (
+            <>
+              <ModeToggle /> {/* Toggle is on the left of logout button on admin pages */}
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="text-red-500 hover:text-red-600 hover:bg-red-50 flex items-center"
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+              </Button>
+            </>
+          ) : (
+            /* Toggle is on the right (alone) on login page */
+            <ModeToggle />
           )}
         </div>
       </div>

@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
-      <main className="flex-1">
+      <main className="flex-1 sm:pb-0 pb-16 -mt-16 relative z-10"> 
         <Suspense fallback={<HomePageSkeleton />}>
           {/* Hero Section */}
           <section className="w-full h-screen flex items-center justify-center bg-gradient-to-b from-primary/10 to-background">
@@ -80,7 +80,7 @@ export default function Home() {
           </section>
 
           {/* How It Works Section */}
-          <section className="w-full h-screen flex items-center justify-center bg-muted/30">
+          <section className="w-full h-screen flex items-center justify-center bg-muted/30 mb-16 md:mb-0">
             <div className="container px-4 md:px-6 flex flex-col items-center justify-center">
               <div className="flex flex-col items-center justify-center space-y-4 text-center max-w-3xl mx-auto mb-10">
                 <div className="space-y-2">

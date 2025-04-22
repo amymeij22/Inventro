@@ -135,7 +135,7 @@ Kontribusi terhadap proyek ini sangat diterima. Silakan fork repository ini dan 
 
 ## Lisensi
 
-Hak Cipta © STMKG
+This project is open source and available under the [MIT License](LICENSE)
 
 ---
 

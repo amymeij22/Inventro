@@ -28,18 +28,18 @@ export default function ReportPage() {
   const [isExporting, setIsExporting] = useState(false)
 
   // State untuk data laporan
-  const [inventoryData, setInventoryData] = useState([])
-  const [borrowingData, setBorrowingData] = useState([])
-  const [labUsageData, setLabUsageData] = useState([])
+  const [inventoryData, setInventoryData] = useState<any[]>([])
+  const [borrowingData, setBorrowingData] = useState<any[]>([])
+  const [labUsageData, setLabUsageData] = useState<any[]>([])
 
   // State untuk data chart
-  const [inventoryPieData, setInventoryPieData] = useState([])
-  const [inventoryCategoryData, setInventoryCategoryData] = useState([])
-  const [borrowingPieData, setBorrowingPieData] = useState([])
-  const [borrowingMonthData, setBorrowingMonthData] = useState([])
+  const [inventoryPieData, setInventoryPieData] = useState<any[]>([])
+  const [inventoryCategoryData, setInventoryCategoryData] = useState<any[]>([])
+  const [borrowingPieData, setBorrowingPieData] = useState<any[]>([])
+  const [borrowingMonthData, setBorrowingMonthData] = useState<any[]>([])
 
   // State untuk detail peminjaman
-  const [borrowingDetails, setBorrowingDetails] = useState([])
+  const [borrowingDetails, setBorrowingDetails] = useState<any[]>([])
 
   // Inisialisasi tanggal saat komponen dimuat
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function ReportPage() {
 
     try {
       // Tentukan rentang tanggal berdasarkan filter
-      let dateRangeFilter = null
+      let dateRangeFilter = undefined
       if (dateRange !== "all") {
         dateRangeFilter = {
           startDate,
@@ -69,17 +69,17 @@ export default function ReportPage() {
 
       // Ambil data laporan inventaris
       const inventoryResult = await getInventoryReportData(dateRangeFilter)
-      if (inventoryResult.success) {
+      if (inventoryResult.success && inventoryResult.data) {
         setInventoryData(inventoryResult.data)
 
         // Hitung data untuk pie chart
         const totalAvailable = inventoryResult.data.reduce(
-          (sum, item) => sum + Number.parseInt(item["Jumlah Tersedia"] || "0"),
+          (sum, item) => sum + Number.parseInt(String(item["Jumlah Tersedia"] || "0")),
           0,
         )
         const totalBorrowed = inventoryResult.data.reduce((sum, item) => {
-          const total = Number.parseInt(item["Jumlah Total"] || "0")
-          const available = Number.parseInt(item["Jumlah Tersedia"] || "0")
+          const total = Number.parseInt(String(item["Jumlah Total"] || "0"))
+          const available = Number.parseInt(String(item["Jumlah Tersedia"] || "0"))
           return sum + (total - available)
         }, 0)
 
@@ -89,16 +89,16 @@ export default function ReportPage() {
         ])
 
         // Hitung data kategori untuk pie chart
-        const categoryData = {}
+        const categoryData: { [key: string]: number } = {}
         inventoryResult.data.forEach((item) => {
           const category = item["Kategori"]
           if (!categoryData[category]) {
             categoryData[category] = 0
           }
-          categoryData[category] += Number.parseInt(item["Jumlah Total"] || "0")
+          categoryData[category] += Number.parseInt(String(item["Jumlah Total"] || "0"))
         })
 
-        const categoryColors = {
+        const categoryColors: { [key: string]: string } = {
           "Alat Ukur": "#3b82f6",
           Mikrokontroler: "#10b981",
           Komponen: "#f59e0b",
@@ -115,7 +115,7 @@ export default function ReportPage() {
 
       // Ambil data laporan peminjaman
       const borrowingResult = await getBorrowingReportData(dateRangeFilter)
-      if (borrowingResult.success) {
+      if (borrowingResult.success && borrowingResult.data) {
         console.log("Borrowing data received:", borrowingResult.data)
         setBorrowingData(borrowingResult.data)
         setBorrowingDetails(borrowingResult.data)
@@ -130,7 +130,7 @@ export default function ReportPage() {
         ])
 
         // Hitung data bulanan untuk pie chart
-        const monthData = {}
+        const monthData: { [key: string]: number } = {}
         borrowingResult.data.forEach((item) => {
           if (item["Tanggal Permintaan"]) {
             try {
@@ -155,7 +155,7 @@ export default function ReportPage() {
           }
         })
 
-        const monthColors = {
+        const monthColors: { [key: string]: string } = {
           Januari: "#3b82f6",
           Februari: "#10b981",
           Maret: "#f59e0b",
@@ -188,7 +188,7 @@ export default function ReportPage() {
 
       // Ambil data laporan penggunaan lab
       const labUsageResult = await getLabUsageReportData(dateRangeFilter)
-      if (labUsageResult.success) {
+      if (labUsageResult.success && labUsageResult.data) {
         setLabUsageData(labUsageResult.data)
       }
     } catch (error) {

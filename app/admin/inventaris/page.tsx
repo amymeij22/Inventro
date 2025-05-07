@@ -50,8 +50,8 @@ type InventoryItem = {
   status: "available" | "limited" | "unavailable"
   available_quantity: number
   total_quantity: number
-  description?: string
-  location?: string
+  description?: string | null
+  location?: string | null
 }
 
 // Tipe data untuk kategori
@@ -244,8 +244,8 @@ export default function InventoryManagementPage() {
           category_id: editItem.category_id,
           total_quantity: editItem.total_quantity,
           available_quantity: editItem.available_quantity,
-          description: editItem.description,
-          location: editItem.location,
+          description: editItem.description === null ? undefined : editItem.description,
+          location: editItem.location === null ? undefined : editItem.location,
         })
 
         toast({

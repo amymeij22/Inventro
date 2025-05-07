@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { AlertCircle, CheckCircle, XCircle, Clock, MoreHorizontal } from "lucide-react"
+import { AlertCircle, CheckCircle, XCircle, Clock, MoreHorizontal, FileText } from "lucide-react"
 import { RequestsPageSkeleton } from "@/components/skeleton-loader"
 import {
   Dialog,
@@ -314,6 +314,23 @@ export default function AdminBorrowingRequestsPage() {
                 <div>
                   <h3 className="font-medium">Catatan</h3>
                   <p className="text-sm mt-2">{currentRequest.notes}</p>
+                </div>
+              )}
+
+              {currentRequest.documentation_url && (
+                <div>
+                  <h3 className="font-medium">Dokumentasi</h3>
+                  <div className="mt-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex items-center gap-2" 
+                      onClick={() => window.open(currentRequest.documentation_url, '_blank')}
+                    >
+                      <FileText className="h-4 w-4" />
+                      Lihat Dokumentasi
+                    </Button>
+                  </div>
                 </div>
               )}
 

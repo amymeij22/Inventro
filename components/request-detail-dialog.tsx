@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle, XCircle, Clock } from "lucide-react"
+import { CheckCircle, XCircle, Clock, FileText, ExternalLink } from "lucide-react"
 
 // Tipe data untuk permintaan
 export type RequestType = {
@@ -27,7 +27,7 @@ export type RequestType = {
   requestDate: string
   purpose: string
   notes?: string
-  documentation?: string
+  documentation_url?: string // Gunakan nama field yang sesuai dengan DB
 }
 
 interface RequestDetailDialogProps {
@@ -83,6 +83,29 @@ export function RequestDetailDialog({ request, open, onOpenChange, onStatusChang
       default:
         return "bg-secondary"
     }
+  }
+
+  // Fungsi untuk membuka dokumen di tab baru
+  const openDocumentation = (url: string) => {
+    window.open(url, '_blank')
+  }
+
+  // Fungsi untuk mendapatkan tipe file dari URL
+  const getFileType = (url: string) => {
+    const extension = url.split('.').pop()?.toLowerCase()
+    if (!extension) return 'File'
+    
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
+      return 'Gambar'
+    } else if (extension === 'pdf') {
+      return 'PDF'
+    } else if (['doc', 'docx'].includes(extension)) {
+      return 'Dokumen Word'
+    } else if (['xls', 'xlsx'].includes(extension)) {
+      return 'Spreadsheet Excel'
+    }
+    
+    return 'File'
   }
 
   return (
@@ -163,17 +186,20 @@ export function RequestDetailDialog({ request, open, onOpenChange, onStatusChang
             </div>
           )}
 
-          {request.documentation && (
+          {request.documentation_url && (
             <div>
               <h4 className="text-sm font-medium text-muted-foreground">Dokumentasi</h4>
               <div className="mt-1">
-                <a
-                  href="#"
-                  className="text-sm text-primary hover:underline flex items-center"
-                  onClick={(e) => e.preventDefault()}
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-sm flex items-center gap-2" 
+                  onClick={() => openDocumentation(request.documentation_url!)}
                 >
-                  Lihat Dokumentasi
-                </a>
+                  <FileText className="h-4 w-4" />
+                  <span>Lihat {getFileType(request.documentation_url)}</span>
+                  <ExternalLink className="h-3 w-3 ml-1" />
+                </Button>
               </div>
             </div>
           )}

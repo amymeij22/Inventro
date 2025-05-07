@@ -39,6 +39,7 @@ export type BorrowingRequest = {
   end_date: string
   status: 'pending' | 'approved' | 'rejected' | 'completed'
   request_date: string
+  documentation_url: string | null
   created_at: string
   updated_at: string
   // Relasi dengan borrowed_items
@@ -74,6 +75,7 @@ export type LabUsageRequest = {
   end_time: string
   status: 'pending' | 'approved' | 'rejected' | 'completed'
   request_date: string
+  documentation_url: string | null
   created_at: string
   updated_at: string
 }

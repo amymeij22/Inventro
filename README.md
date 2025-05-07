@@ -13,6 +13,8 @@ Aplikasi ini dapat diakses secara online di [inventro.amymeij.web.id](https://in
 - **UI Components**: [shadcn/ui](https://ui.shadcn.com)
 - **Backend/Database**: [Supabase](https://supabase.com)
 - **Authentication**: Supabase Auth
+- **Data Visualization**: Recharts
+- **Ekspor Data**: XLSX, jsPDF
 - **Language**: TypeScript
 
 ## Fitur Utama
@@ -21,8 +23,9 @@ Aplikasi ini dapat diakses secara online di [inventro.amymeij.web.id](https://in
 - Pelacakan barang dengan status (tersedia, terbatas, tidak tersedia)
 - Kategorisasi barang
 - Pelacakan lokasi penyimpanan
-- Import/export data melalui Excel
+- Import/export data melalui Excel dengan template otomatis
 - Informasi detail barang dengan deskripsi
+- Pengelolaan stok otomatis
 
 ### 2. Sistem Peminjaman
 - Formulir pengajuan peminjaman barang
@@ -30,16 +33,35 @@ Aplikasi ini dapat diakses secara online di [inventro.amymeij.web.id](https://in
 - Pelacakan status (menunggu, disetujui, ditolak, selesai)
 - Peminjaman multi-item
 - Spesifikasi tanggal peminjaman dan pengembalian
+- Upload dokumentasi pendukung
+- Pembaruan stok otomatis saat peminjaman dan pengembalian
 
 ### 3. Pengelolaan Penggunaan Laboratorium
 - Penjadwalan penggunaan laboratorium
 - Pengecekan ketersediaan
 - Manajemen permintaan penggunaan lab
+- Spesifikasi waktu mulai dan selesai
+- Upload dokumentasi pendukung
 
-### 4. Laporan
-- Laporan inventaris
-- Riwayat peminjaman
+### 4. Laporan dan Visualisasi Data
+- Laporan inventaris dengan grafik status dan kategori
+- Riwayat peminjaman dengan filter periode
 - Statistik penggunaan laboratorium
+- Ekspor laporan ke format Excel dan PDF
+- Visualisasi data dengan chart interaktif
+- Filter laporan berdasarkan rentang tanggal
+
+### 5. Dashboard Admin
+- Ringkasan statistik inventaris dan peminjaman
+- Tampilan permintaan terbaru
+- Status inventaris secara real-time
+- Informasi barang yang paling sering dipinjam
+
+### 6. Utilitas
+- Template untuk impor data inventaris
+- Ekspor data ke Excel dan PDF
+- Manajemen dokumen pendukung
+- Pencarian dan filter data
 
 ## Struktur Aplikasi
 
@@ -50,7 +72,8 @@ Aplikasi ini dapat diakses secara online di [inventro.amymeij.web.id](https://in
 │   │   ├── inventaris/     # Manajemen inventaris
 │   │   ├── laporan/        # Laporan
 │   │   ├── peminjaman/     # Manajemen peminjaman
-│   │   └── penggunaan-lab/ # Manajemen penggunaan lab
+│   │   ├── penggunaan-lab/ # Manajemen penggunaan lab
+│   │   └── setup-utility/  # Utilitas setup dan konfigurasi
 │   ├── inventaris/         # Halaman inventaris publik
 │   └── peminjaman/         # Halaman pengajuan peminjaman publik
 ├── components/             # Komponen React
@@ -63,16 +86,22 @@ Aplikasi ini dapat diakses secara online di [inventro.amymeij.web.id](https://in
 
 ### 1. Sebagai Pengguna
 - Lihat daftar inventaris di halaman Inventaris
+- Filter barang berdasarkan kategori atau status
 - Ajukan peminjaman barang melalui form Peminjaman
+- Pilih barang, tentukan jumlah, dan jadwal peminjaman
+- Upload dokumen pendukung (opsional)
 - Konfirmasi dengan mengirim bukti pendukung melalui WhatsApp
 - Pantau status peminjaman
 
 ### 2. Sebagai Admin
 - Login ke halaman admin
 - Kelola inventaris (tambah, edit, hapus barang)
+- Import/export data inventaris dengan Excel
 - Proses permintaan peminjaman (setujui/tolak)
 - Kelola penggunaan laboratorium
-- Akses laporan dan statistik
+- Lihat dan ekspor laporan ke Excel atau PDF
+- Akses statistik dan visualisasi data
+- Pembaruan status permintaan dan pengaruhnya pada stok
 
 ## Memulai Pengembangan
 
@@ -87,7 +116,7 @@ Aplikasi ini dapat diakses secara online di [inventro.amymeij.web.id](https://in
 
 ```bash
 git clone [repository-url]
-cd myinventro
+cd inventro
 ```
 
 2. Install dependencies:
@@ -124,6 +153,12 @@ yarn dev
 1. Buat project baru di [Supabase](https://supabase.com)
 2. Jalankan migrasi database (SQL tersedia di folder `migrations` jika ada)
 3. Atur kebijakan keamanan Supabase sesuai kebutuhan
+4. Pastikan tabel-tabel berikut sudah tersedia:
+   - `inventory_items` (untuk inventaris)
+   - `categories` (untuk kategori barang)
+   - `borrowing_requests` (untuk permintaan peminjaman)
+   - `borrowed_items` (untuk item yang dipinjam)
+   - `lab_usage_requests` (untuk permintaan penggunaan lab)
 
 ## Deployment
 

@@ -154,7 +154,7 @@ export default function BorrowingPage() {
 
     try {
       if (formType === "peminjaman") {
-        // Submit borrowing request to Supabase
+        // Submit borrowing request to Supabase with documentation file
         await createBorrowingRequest(
           {
             name: formData.name,
@@ -166,9 +166,10 @@ export default function BorrowingPage() {
             end_date: formData.endDate.toISOString().split("T")[0],
           },
           selectedItems,
+          formData.documentation // Pass the documentation file
         )
       } else {
-        // Submit lab usage request to Supabase
+        // Submit lab usage request to Supabase with documentation file
         await createLabUsageRequest({
           name: formData.name,
           npt: formData.npt,
@@ -179,7 +180,9 @@ export default function BorrowingPage() {
           end_date: formData.endDate.toISOString().split("T")[0],
           start_time: formData.startTime,
           end_time: formData.endTime,
-        })
+        },
+        formData.documentation // Pass the documentation file
+        )
       }
 
       // Show success message
@@ -223,7 +226,7 @@ export default function BorrowingPage() {
       message += encodeURIComponent(
         `\nKeperluan: ${formData.purpose}\n` +
           `${formData.notes ? `Catatan: ${formData.notes}\n\n` : ""}` +
-          `${formData.documentation ? "Dokumentasi akan dikirimkan segera." : ""}`,
+          `${formData.documentation ? "Dokumentasi terlampir pada pengajuan." : ""}`,
       )
 
       // Nomor WhatsApp admin (contoh)

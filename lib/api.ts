@@ -94,7 +94,8 @@ export async function createBorrowingRequest(
     start_date: string
     end_date: string
   },
-  items: { id: string; quantity: number }[]
+  items: { id: string; quantity: number }[],
+  documentationFile?: File
 ): Promise<number> {
   const supabase = getClientSupabaseClient()
   
@@ -135,6 +136,26 @@ export async function createBorrowingRequest(
     throw new Error('Failed to add borrowed items')
   }
   
+  // Upload file dokumentasi jika ada
+  if (documentationFile) {
+    try {
+      const fileUrl = await uploadDocumentation(documentationFile, 'borrowing', request.id)
+      
+      // Update permintaan dengan URL dokumentasi
+      const { error: updateError } = await supabase
+        .from('borrowing_requests')
+        .update({ documentation_url: fileUrl })
+        .eq('id', request.id)
+      
+      if (updateError) {
+        console.error('Error updating documentation URL:', updateError)
+      }
+    } catch (error) {
+      console.error('Error uploading documentation:', error)
+      // Lanjutkan meskipun gagal upload, permintaan sudah dibuat
+    }
+  }
+  
   return request.id
 }
 
@@ -150,7 +171,8 @@ export async function createLabUsageRequest(
     end_date: string
     start_time: string
     end_time: string
-  }
+  },
+  documentationFile?: File
 ): Promise<number> {
   const supabase = getClientSupabaseClient()
   
@@ -174,6 +196,26 @@ export async function createLabUsageRequest(
   if (error) {
     console.error('Error creating lab usage request:', error)
     throw new Error('Failed to create lab usage request')
+  }
+  
+  // Upload file dokumentasi jika ada
+  if (documentationFile) {
+    try {
+      const fileUrl = await uploadDocumentation(documentationFile, 'lab', data.id)
+      
+      // Update permintaan dengan URL dokumentasi
+      const { error: updateError } = await supabase
+        .from('lab_usage_requests')
+        .update({ documentation_url: fileUrl })
+        .eq('id', data.id)
+      
+      if (updateError) {
+        console.error('Error updating documentation URL:', updateError)
+      }
+    } catch (error) {
+      console.error('Error uploading documentation:', error)
+      // Lanjutkan meskipun gagal upload, permintaan sudah dibuat
+    }
   }
   
   return data.id
@@ -566,5 +608,74 @@ export async function getDashboardStats() {
     availableItems: availableItemCount,
     pendingRequests: pendingCount || 0,
     completedRequests: completedCount || 0
+  }
+}
+
+// Fungsi untuk mengupload file dokumentasi ke storage Supabase
+export async function uploadDocumentation(file: File, requestType: 'borrowing' | 'lab', requestId: number): Promise<string> {
+  const supabase = getClientSupabaseClient()
+  
+  // Buat nama file unik dengan format: {requestType}_{requestId}_{timestamp}.{extension}
+  const fileExt = file.name.split('.').pop()
+  const fileName = `${requestType}_${requestId}_${Date.now()}.${fileExt}`
+  
+  // Path perlu diperhatikan, jangan gunakan nested folder seperti documentation/fileName
+  // Langsung gunakan fileName tanpa subfolder
+  const filePath = fileName
+  
+  console.log('Uploading documentation:', { fileName, requestType, requestId })
+  console.log('File info:', { size: file.size, type: file.type })
+  
+  // Upload file ke bucket 'documentation'
+  const { data, error } = await supabase
+    .storage
+    .from('documentation')
+    .upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: true
+    })
+  
+  if (error) {
+    console.error('Error uploading documentation:', error)
+    throw new Error('Failed to upload documentation')
+  }
+  
+  console.log('Upload successful:', data)
+  
+  // Dapatkan URL publik file
+  const { data: urlData } = supabase
+    .storage
+    .from('documentation')
+    .getPublicUrl(data.path)
+  
+  console.log('Documentation URL:', urlData.publicUrl)
+  
+  return urlData.publicUrl
+}
+
+// Fungsi untuk mendapatkan URL dokumen dari Supabase Storage
+export async function getDocumentationUrl(filePath: string): Promise<string> {
+  const supabase = getClientSupabaseClient()
+  
+  const { data } = supabase
+    .storage
+    .from('documentation')
+    .getPublicUrl(filePath)
+  
+  return data.publicUrl
+}
+
+// Fungsi untuk menghapus file dokumentasi dari storage
+export async function deleteDocumentation(filePath: string): Promise<void> {
+  const supabase = getClientSupabaseClient()
+  
+  const { error } = await supabase
+    .storage
+    .from('documentation')
+    .remove([filePath])
+  
+  if (error) {
+    console.error('Error deleting documentation:', error)
+    throw new Error('Failed to delete documentation')
   }
 }

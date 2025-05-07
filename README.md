@@ -2,13 +2,9 @@
 
 Inventro adalah sistem manajemen inventaris dan peminjaman barang yang dikembangkan untuk Laboratorium Elektronika STMKG. Aplikasi ini menyediakan solusi digital untuk mengelola inventaris laboratorium, memproses permintaan peminjaman barang, dan mengatur penggunaan laboratorium.
 
-## Live Application
-
-Aplikasi ini dapat diakses secara online di [inventro.amymeij.web.id](https://inventro.amymeij.web.id)
-
 ## Tech Stack
 
-- **Framework**: [Next.js](https://nextjs.org) 14+ dengan App Router
+- **Framework**: [Next.js](https://nextjs.org) 15+ dengan App Router
 - **Styling**: [Tailwind CSS](https://tailwindcss.com)
 - **UI Components**: [shadcn/ui](https://ui.shadcn.com)
 - **Backend/Database**: [Supabase](https://supabase.com)
@@ -130,11 +126,6 @@ yarn install
 ```
 
 3. Salin file `.env.example` menjadi `.env.local` dan isi variabel lingkungan yang diperlukan:
-
-```
-NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-```
 
 4. Jalankan development server:
 
